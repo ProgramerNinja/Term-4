@@ -4,11 +4,15 @@
 from superwires import games
 
 
-games.init(screen_width = 640, screen_height = 480, fps = 50)
+games.init(screen_width = 900, screen_height = 720, fps = 50)
 
 
 class Ship(games.Sprite):
     ship_image = games.load_image("images/ship.png")
+
+
+    ROTATION_STEP = 6
+    VELOCITY_STEP = .03
 
     def __init__(self):
         super(Ship,self).__init__(image = Ship.ship_image,
@@ -16,14 +20,16 @@ class Ship(games.Sprite):
                                   y=games.screen.height / 2)
 
     def update(self):
-        if games.keyboard.is_pressed(games.K_w) or games.keyboard.is_pressed(games.K_UP):
-            self.y-=8
-        if games.keyboard.is_pressed(games.K_s) or games.keyboard.is_pressed(games.K_DOWN):
-            self.y+=8
+
         if games.keyboard.is_pressed(games.K_a) or games.keyboard.is_pressed(games.K_LEFT):
             self.angle-=8
         if games.keyboard.is_pressed(games.K_d) or games.keyboard.is_pressed(games.K_RIGHT):
             self.angle+=8
+        if games.keyboard.is_pressed(games.K_w) or games.keyboard.is_pressed(games.K_UP):
+            Ship.sound.play()
+            angle = self.angle * math.pi/180
+            self.dx += Ship.VELOCITY_STEP * math.sin(angle)
+            self.dy += Ship.VELOCITY_STEP * -math.cos(angle)
 
 
 def main():
@@ -39,7 +45,7 @@ def main():
                       "animations/explosion7.png",
                       "animations/explosion8.png",]
     ##missle_sound = games.load_sound("")
-    games.music.load("Music/03 Chibi Ninja.mp4")
+    games.music.load("Music/03 Chibi Ninja.mp3")
 
 
     # create objects
@@ -58,7 +64,7 @@ def main():
 
 
     # games setup
-
+    games.music.play("Music/03 Chibi Ninja.mp3")
 
 
     # start loop
