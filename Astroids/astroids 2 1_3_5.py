@@ -46,12 +46,33 @@ class Collider(Wrapper):
 
     def die(self):
         #create explosion
+        new_explosion = Explosion(obj_x = self.x, obj_y = self.y)
+
         #add explosion to screen
+        games.screen.add(new_explosion)
+
         self.destroy()
 
+class Explosion(games.Animation):
+    sound = games.load_sound("Music/explosion.wav")
+    expimages = ["animations/explosion1.png",
+                       "animations/explosion2.png",
+                       "animations/explosion3.png",
+                       "animations/explosion4.png",
+                       "animations/explosion5.png",
+                       "animations/explosion6.png",
+                       "animations/explosion7.png",
+                       "animations/explosion8.png", ]
+    def __init__(self, obj_x, obj_y):
+        super(Explosion, self).__init__(images = Explosion.expimages,
+                                      x=obj_x, y=obj_y,
+                                      repeat_interval = 4,
+                                      is_collideable = False,
+                                      n_repeats = 1)
+        Explosion.sound.play()
 
 
-class Asteroid(games.Sprite):
+class Asteroid(Collider):
     SMALL = 1
     MEDIUM = 2
     LARGE = 3
@@ -70,20 +91,8 @@ class Asteroid(games.Sprite):
                                       dy = random.choice([1, -1]) * Asteroid.SPEED * random.random() / size)
         self.size = size
 
-    def update(self):
-        if self.left > games.screen.width:
-            self.right = 0
-
-        if self.right < 0:
-            self.left = games.screen.width
-
-        if self.bottom < 0:
-            self.top = games.screen.height
-
-        if self.top > games.screen.height:
-            self.bottom = 0
-
     def die(self):
+        super(Asteroid, self).die()
         if self.size != Asteroid.SMALL:
             for i in range(Asteroid.SPAWN):
                 new_asteroid = Asteroid(x = self.x,
@@ -93,7 +102,7 @@ class Asteroid(games.Sprite):
         self.destroy()
 
 
-class Ship(games.Sprite):
+class Ship(Collider):
     image = games.load_image("images/ship.png")
     sound = games.load_sound("Music/thruster.wav")
 
@@ -110,6 +119,7 @@ class Ship(games.Sprite):
 
 
     def update(self):
+        super(Ship, self).update()
         if games.keyboard.is_pressed(games.K_LEFT) or games.keyboard.is_pressed(games.K_a):
             self.angle -= Ship.ROTATION_STEP
 
@@ -132,35 +142,13 @@ class Ship(games.Sprite):
             print("bang pop pow")
 
 
-        if self.left > games.screen.width:
-            self.right = 0
 
-        if self.right < 0:
-            self.left = games.screen.width
-
-        if self.bottom < 0:
-            self.top = games.screen.height
-
-        if self.top > games.screen.height:
-            self.bottom = 0
-
-        if self.overlapping_sprites:
-            for sprite in self.overlapping_sprites:
-                sprite.die()
-            self.die()
-
-
-
-    def die(self):
-        self.destroy()
-
-
-class Missile(games.Sprite):
+class Missile(Collider):
     image = games.load_image("images/missile.png", transparent = True)
     sound = games.load_sound("Music/missile.wav")
     BUFFER = 60
     VELOCITY_FACTOR = 9
-    LIFETIME = 40
+    LIFETIME = 80
 
     def __init__(self, ship_x, ship_y, ship_angle):
         Missile.sound.play()
@@ -185,30 +173,11 @@ class Missile(games.Sprite):
         self.lifetime = Missile.LIFETIME
 
     def update(self):
-        #wrap missile around the screen
-        if self.left > games.screen.width:
-            self.right = 0
-
-        if self.right < 0:
-            self.left = games.screen.width
-
-        if self.bottom < 0:
-            self.top = games.screen.height
-
-        if self.top > games.screen.height:
-            self.bottom = 0
-
+        super(Missile, self).update()
         self.lifetime -= 1
         if self.lifetime == 0:
             self.destroy()
 
-        if self.overlapping_sprites:
-            for sprite in self.overlapping_sprites:
-                sprite.die()
-            self.die()
-
-    def die(self):
-        self.destroy()
 
         
 
@@ -245,6 +214,7 @@ def main():
 
 
     #games setup
+    #games.music.play("Music/03 Chibi Ninja.mp4")
 
 
 
