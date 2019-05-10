@@ -192,7 +192,7 @@ class Asteroid(Wrapper):
         self.game.score.right = games.screen.width - 10
 
         # if asteroid isn't small, replace with two smaller asteroids
-        if self.size == Asteroid.LARGE or Asteroid.MEDIUM:
+        if self.size == Asteroid.LARGE or self.size == Asteroid.MEDIUM:
             self.size-=1
             for i in range(Asteroid.SPAWN):
                 new_asteroid = Asteroid(game=self.game,
@@ -200,6 +200,8 @@ class Asteroid(Wrapper):
                                         y=self.y,
                                         size=self.size)
                 games.screen.add(new_asteroid)
+        else:
+            self.die
 
         # if all asteroids are gone, advance to next level
         if Asteroid.total == 0:
