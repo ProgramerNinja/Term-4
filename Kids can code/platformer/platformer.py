@@ -1,5 +1,3 @@
-# jumpy platform game
-
 import pygame as pg
 import random
 from settings import *
@@ -38,15 +36,16 @@ class Game:
         for event in pg.event.get():
             # check for closing the window
             if event.type == pg.QUIT:
-                if self.playing == False:
-                    self.running = False
+                if self.playing:
+                    self.playing = False
+                self.running = False
 
     def draw(self):
         #game loop: Draw
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         # *after drawing everything, flip the display
-        pygame.display.flip()
+        pg.display.flip()
 
     def show_start_screen(self):
         # game splash/start screen
@@ -64,5 +63,3 @@ while g.running:
     g.show_go_screen()
 
 pg.quit()
-
-

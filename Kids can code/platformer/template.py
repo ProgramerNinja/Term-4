@@ -7,7 +7,7 @@ from settings import *
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption(TITLE)
+pygame.display.set_caption("My Game")
 clock = pygame.time.Clock()
 
 
